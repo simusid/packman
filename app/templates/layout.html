@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="static/jquery-3.6.1.min.js"></script>
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    {% endblock %}
+  </head>
+  <body>
+    <h1>PackMan</h1>
+    <p>A metadata manager for dataset "packages"</p>
+   
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+      {% block footer %}
+      
+      {% endblock %}
+    </div>
+
+<!-- Jquery functions here -->
+<script>
+    $(document).ready(function(){
+        //alert("ready");  // uncomment for debugging jquery 
+    });
+
+    $("button").click(function(){ 
+    
+      if(this.id=='add'){
+        window.location.href="/add"
+        return
+      }
+    })
+    </script>
+  </body>
+</html>
