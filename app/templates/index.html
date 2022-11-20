@@ -8,7 +8,7 @@
     <tr><th>ID</th>
 
         {% for s in schema %}
-        <th>{{s}}</th>
+        <th>{{s| capitalize}}</th>
         {% endfor %}
     </tr>
 {% for package in packages %}
