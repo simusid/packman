@@ -5,7 +5,8 @@
 <button id='add' class="add">Add Package</button>
  
 <table>
-    <tr>
+    <tr><th>ID</th>
+
         {% for s in schema %}
         <th>{{s}}</th>
         {% endfor %}
@@ -14,15 +15,18 @@
 <tr>
     {% for key,value in package.items() %}
         {% if key=='id' %}
-         {% set id = value %}
-        {% endif %}
-        
+            {% set id = value %}
+        {% endif %} 
     <td>{{value}}</td>
     {% endfor %}
 
     <td><button onclick="window.location.href='/edit/{{package['id']}}'">Edit</button></td>
     <td><button onclick="window.location.href='/status/{{package['id']}}'">Status</button></td>
-    <td><button class="del" onclick="window.location.href='/delete/{{package['id']}}'">Delete</button></td>
+    <td><button class="del" 
+        onclick="window.location.href='/delete/{{package['id']}}'">
+        Delete
+        </button>
+    </td>
     
 </tr>
 {% endfor %}

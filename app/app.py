@@ -10,7 +10,7 @@ schema = ( "name", "description", "location", "notes")
 @app.route("/",  methods=['GET' ])
 def index():
     packages = getPackages()
-    return render_template("index.html", packages=packages )
+    return render_template("index.html", packages=packages, schema=schema )
 
 @app.route("/add/", methods=['GET','POST'])
 def add():     
@@ -72,4 +72,3 @@ def status(id):
     status = "There are {} files with a total size of {} MB".format(len(fnames), size)
   
     return render_template('status.html', status=status)
-
