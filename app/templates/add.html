@@ -2,9 +2,9 @@
 <form method="POST" action="/add">
     <table>
       {%for s in schema%}
-      <tr><td>{{s}}</td>
-        <td><input type='text' name='{{s}}'/></td>
-      </tr>
+        <tr><td>{{s}}</td>     
+          <td><input type='text' name='{{s}}'/></td>   
+        </tr>
       {% endfor%}
       <tr><td colspan=2><input type='submit'/></td></tr>
     </table>

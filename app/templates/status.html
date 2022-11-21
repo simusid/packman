@@ -1,1 +1,13 @@
 {{status}}
+
+<p>Sample Images</p>
+{% for sample in image_samples %}
+<img src="{{sample}}" width="200" height="200"/> <br/>
+
+{% endfor %}
+
+<p>Sample audio</p>
+{% for sample in audio_samples %}
+ <audio controls src="{{sample}}"></audio><br/>
+
+{% endfor %}

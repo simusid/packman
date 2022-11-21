@@ -8,3 +8,12 @@ A "package manager" to support long term, large scale data management.  Fundamen
 
 * Metrics can be different for each package 
 
+# Installation
+Clone the repo and cd to packman.   Start the server for development:
+
+flask --app app/app.py --debug run 
+
+If using authentication (ref https://flask-httpauth.readthedocs.io/en/latest/ )  start with run --cert=adhoc
+
+Note this requires that pyopenssl is installed
+
