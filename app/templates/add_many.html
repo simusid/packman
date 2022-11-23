@@ -1,0 +1,20 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<h1>Add Many</h1>
+<p>example: \\npa0humble\UUVData\UUV_Data\SAS_DATA\2022_SAS</p>
+<input type="text" size="100" onblur="displayDir()"/>
+
+
+{{rootfiles}}
+<script>
+function postDir(rf)
+
+    $.post("/add",{name:"test",description:"asdlkf", location:"20220302A_1", notes:""})
+        .done(function(data){
+             // TODO redirect to index 
+        })
+    
+</script>
+
+{% endblock %} 

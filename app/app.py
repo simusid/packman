@@ -2,6 +2,9 @@ import uuid
 import os, random, shutil
 from flask import Flask, redirect, render_template, request, session
 from flask_httpauth import HTTPDigestAuth
+import matplotlib.pyplot as plt
+
+import numpy as np
 
 from utils.utils import *
 
@@ -26,14 +29,14 @@ def get_pw(username):
 @auth.login_required
 def index():
     packages = getPackages()
-    return render_template("index.html", packages=packages, schema=schema )
+    count = len(packages)
+    return render_template("index.html", packages=packages, schema=schema , count=count)
 
 @app.route("/add/", methods=['GET','POST'])
 def add():     
     if(request.method=="POST"):
         d={}
         d['id']=str(uuid.uuid4())
-      
         for k,v in request.form.items():
             print(k,v)
             d[k]=v
@@ -43,6 +46,31 @@ def add():
         return redirect("/")
 
     return render_template("add.html", schema=schema)
+
+@app.route("/add_many")
+def add_many():
+
+    roots = [r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2022_SAS',
+    r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2021_SAS',
+    r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2020_SAS',
+    r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2019_SAS',
+    r'\\npa0humble\UUVData\UUV_Data\Elver\221104',
+    r'\\npa0humble\UUVData\UUV_Data\Elver\221107'
+    ]
+    for root in roots:
+        rootfiles  = os.listdir(root)
+        rootdirs = [os.path.join(root, rf) for rf in rootfiles if os.path.isdir(os.path.join(root, rf))]
+        for i, rd in enumerate(rootdirs):
+            d={}
+            d['id']=str(uuid.uuid4())
+            d['name']=rootfiles[i]
+            d['description']='test'
+            d['location']=rd
+            d['notes']=""
+            packages = getPackages()
+            packages.append(d)
+            putPackages(packages)
+    return redirect("/")
 
 @app.route("/delete/<id>")
 def delete(id):
@@ -70,7 +98,7 @@ def edit(id=None):
         newpackages.append(d)
         putPackages(newpackages)
         return redirect('/')
-
+        
     p = getPackage(id)
     return render_template("edit.html", schema=schema, package=p)
 
@@ -95,7 +123,6 @@ def status(id):
                 jpgs.append(f)
             if(".wav" in f or "*.mp3" in f):
                 audio.append(f)
-
     size = sum(sizes)//1000000
     status = "There are {} files with a total size of {} MB".format(len(fnames), size)
     random.shuffle(jpgs)
@@ -114,3 +141,31 @@ def status(id):
             status=status, 
             image_samples=jpg_samples,
             audio_samples=audio_samples)
+
+@app.route('/datagrowth')
+def datagrowth():
+    packages= getPackages()
+    sizes=[]
+    times=[]
+    for p in packages:
+        psize=[]
+        path=p['location']
+        for root, name, files in os.walk(path):
+            for n in files:
+                f =os.path.join(root, n)
+                psize.append(os.path.getsize(f))
+        sizes.append(sum(psize)//1000000)
+        times.append(os.path.getctime(path))
+
+    x = times
+    y = sizes
+    new_x, new_y = (list(n) for n in zip(*sorted(zip(x, y))))
+
+    cumsum = np.cumsum(new_y)
+    plt.figure(figsize=(12,10))
+    plt.plot(new_x, cumsum)
+    plt.grid(which='both')
+    plt.title("Data Growth Over Time")
+    plt.ylabel("Size of All Packages in MB")
+    plt.savefig("app/static/datagrowth.jpg")
+    return render_template("datagrowth.html",sizes=sizes, times=times)
