@@ -2,7 +2,10 @@ import uuid
 import os, random, shutil
 from flask import Flask, redirect, render_template, request, session
 from flask_httpauth import HTTPDigestAuth
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+import base64
+from io import BytesIO
+import datetime 
 
 import numpy as np
 
@@ -17,7 +20,8 @@ users = {
 }
 auth = HTTPDigestAuth() 
 
-schema = ( "name", "description", "location", "notes")
+# top level schema shared by all packages
+schema = ( "name", "description", "location",  "notes")
 
 @auth.get_password
 def get_pw(username):
@@ -35,35 +39,33 @@ def index():
 @app.route("/add/", methods=['GET','POST'])
 def add():     
     if(request.method=="POST"):
-        d={}
-        d['id']=str(uuid.uuid4())
+        newpkg={}
+        newpkg['id']=str(uuid.uuid4())
         for k,v in request.form.items():
             print(k,v)
-            d[k]=v
+            newpkg[k]=v
         packages = getPackages()
-        packages.append(d)
+        packages.append(newpkg)
         putPackages(packages)
         return redirect("/")
 
     return render_template("add.html", schema=schema)
 
+# given a root path, add every subdirectory as a project
+# this is more useful for testing
 @app.route("/add_many")
 def add_many():
 
-    roots = [r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2022_SAS',
-    r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2021_SAS',
-    r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2020_SAS',
-    r'\\npa0humble\UUVData\UUV_Data\SAS_DATA\2019_SAS',
-    r'\\npa0humble\UUVData\UUV_Data\Elver\221104',
-    r'\\npa0humble\UUVData\UUV_Data\Elver\221107'
-    ]
+    roots = [  
+    "/Users/gary/Desktop/ML_Projects"]
+
     for root in roots:
         rootfiles  = os.listdir(root)
-        rootdirs = [os.path.join(root, rf) for rf in rootfiles if os.path.isdir(os.path.join(root, rf))]
+        rootdirs =[os.path.join(root, r) for r in rootfiles if os.path.isdir(os.path.join(root, r)) == True]
         for i, rd in enumerate(rootdirs):
             d={}
             d['id']=str(uuid.uuid4())
-            d['name']=rootfiles[i]
+            d['name']=os.path.basename(rd)
             d['description']='test'
             d['location']=rd
             d['notes']=""
@@ -117,12 +119,14 @@ def status(id):
     for root, name, files in os.walk(path):
         for n in files:
             f =os.path.join(root, n)
+            print(f)
             fnames.append(f)
             sizes.append(os.path.getsize(f))
             if(".jpg" in f):
                 jpgs.append(f)
             if(".wav" in f or "*.mp3" in f):
                 audio.append(f)
+
     size = sum(sizes)//1000000
     status = "There are {} files with a total size of {} MB".format(len(fnames), size)
     random.shuffle(jpgs)
@@ -153,19 +157,20 @@ def datagrowth():
         for root, name, files in os.walk(path):
             for n in files:
                 f =os.path.join(root, n)
-                psize.append(os.path.getsize(f))
+                psize.append(os.path.getsize(f))  # TODO - speed this up
         sizes.append(sum(psize)//1000000)
         times.append(os.path.getctime(path))
 
-    x = times
-    y = sizes
-    new_x, new_y = (list(n) for n in zip(*sorted(zip(x, y))))
-
+    new_x, new_y = (list(n) for n in zip(*sorted(zip(times, sizes))))
+    new_x = [datetime.datetime.fromtimestamp(n) for n in new_x]
     cumsum = np.cumsum(new_y)
-    plt.figure(figsize=(12,10))
-    plt.plot(new_x, cumsum)
-    plt.grid(which='both')
-    plt.title("Data Growth Over Time")
-    plt.ylabel("Size of All Packages in MB")
-    plt.savefig("app/static/datagrowth.jpg")
-    return render_template("datagrowth.html",sizes=sizes, times=times)
+    fig = Figure()
+    ax = fig.subplots()
+    ax.plot(new_x, cumsum)
+    ax.set_title("Data Growth Over Time")
+    ax.grid("both")
+    ax.set_ylabel("Size of All Packages in MB")
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return render_template("datagrowth.html",sizes=sizes, times=times, data=data)

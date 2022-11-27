@@ -1,9 +1,13 @@
-{{status}}
+{% extends "layout.html" %}
+
+{% block content %}
+<h3>Status</h3>{{status}}
 
 <p>Sample Images</p>
 {% for sample in image_samples %}
+<div>
 <img src="{{sample}}" width="200" height="200"/> <br/>
-
+</div>
 {% endfor %}
 
 <p>Sample audio</p>
@@ -11,3 +15,5 @@
  <audio controls src="{{sample}}"></audio><br/>
 
 {% endfor %}
+
+{% endblock %}

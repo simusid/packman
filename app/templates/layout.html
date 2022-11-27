@@ -7,11 +7,13 @@
     <title>{% block title %}{% endblock %} PackMan - A Metadata Manager for Data Packages</title>
     {% endblock %}
   </head>
+  
   <body>
     <h1>PackMan</h1>
     <p>A metadata manager for dataset "packages"</p>
    
     <div id="content">{% block content %}{% endblock %}</div>
+    <a href="/datagrowth">Data growth of all packages</a>
     <div id="footer">
       {% block footer %}
       

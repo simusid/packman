@@ -1,2 +1,6 @@
- 
-<img src="/static/datagrowth.jpg"/>
+{% extends "layout.html" %}
+
+{% block content %}
+<img src='data:image/png;base64,{{data}}'/>
+
+{% endblock %}

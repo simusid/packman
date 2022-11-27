@@ -1,7 +1,10 @@
-<h1>Add</h1>
+
+{% extends "layout.html" %}
+
+{% block content %}<h1>Add A New Package</h1>
 <form method="POST" action="/add">
     <table>
-      {%for s in schema%}
+      {% for s in schema %}
         <tr><td>{{s}}</td>     
           <td><input type='text' name='{{s}}'/></td>   
         </tr>
@@ -9,6 +12,8 @@
       <tr><td colspan=2><input type='submit'/></td></tr>
     </table>
 </form>
+
+{% endblock %}
 
  
  
