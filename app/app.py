@@ -174,3 +174,9 @@ def datagrowth():
     fig.savefig(buf, format="png")
     data = base64.b64encode(buf.getbuffer()).decode("ascii")
     return render_template("datagrowth.html",sizes=sizes, times=times, data=data)
+
+@app.route("/checkLocation/<id>")
+def checkLocation(id):
+    package = getPackage(id)
+    exists = os.path.isdir(package['location'])  # TODO - this only checks for directories
+    return str(exists)

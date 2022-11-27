@@ -20,7 +20,7 @@
     {% endfor %}
 
     <td><button onclick="window.location.href='/edit/{{package['id']}}'">Edit</button></td>
-    <td><button onclick="window.location.href='/status/{{package['id']}}'">Status</button></td>
+    <td><button id="status_{{package['id']}}" onclick="window.location.href='/status/{{package['id']}}'">Status</button></td>
     <td><button class="del" 
         onclick="window.location.href='/delete/{{package['id']}}'">
         Delete
@@ -32,4 +32,20 @@
 </table>
 <div><h2>{{count}} packages</h2></div>
  
+<script>
+    
+     $('[id^=status_]').each(function(){
+        s = $(this).attr("id");
+        s = s.split("_")[1]
+        $.ajax({url:"/checkLocation/"+ s})
+            .done(function(data){
+                if(data=="False"){
+                     $("#status_"+s).addClass("missing")
+                     console.log("button.missing")
+                }
+            })
+
+     })
+    </script>
 {% endblock %}
+
