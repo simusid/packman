@@ -175,8 +175,13 @@ def datagrowth():
     data = base64.b64encode(buf.getbuffer()).decode("ascii")
     return render_template("datagrowth.html",sizes=sizes, times=times, data=data)
 
+# if the location exists for this id 
+# return "<boolean> <id>" so the ajax call can complete 
 @app.route("/checkLocation/<id>")
 def checkLocation(id):
     package = getPackage(id)
-    exists = os.path.isdir(package['location'])  # TODO - this only checks for directories
-    return str(exists)
+    try:
+        exists = os.path.isdir(package['location'])  # TODO - this only checks for directories
+        return str(exists) + " " + id
+    except Exception as e:
+        return "False None"

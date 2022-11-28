@@ -33,15 +33,15 @@
 <div><h2>{{count}} packages</h2></div>
  
 <script>
-    
+     // checklocation returns "<boolean> <id>"
      $('[id^=status_]').each(function(){
         s = $(this).attr("id");
         s = s.split("_")[1]
         $.ajax({url:"/checkLocation/"+ s})
             .done(function(data){
-                if(data=="False"){
-                     $("#status_"+s).addClass("missing")
-                     console.log("button.missing")
+                rc = data.split(" ")
+                if(rc[0]=="False"){
+                     $("#status_"+rc[1]).addClass("missing")
                 }
             })
 
