@@ -5,9 +5,14 @@
 <form method="POST" action="/add">
     <table>
       {% for s in schema %}
+        {% if s=="notes" %}
+          <tr><td>{{s}}</td>
+           <td><textarea name="{{s}}"></textarea></td></tr>
+        {% else %}
         <tr><td>{{s}}</td>     
           <td><input type='text' name='{{s}}'/></td>   
         </tr>
+        {% endif %}
       {% endfor%}
       <tr><td colspan=2><input type='submit'/></td></tr>
     </table>

@@ -2,15 +2,23 @@
 
 <form method="POST" action="/edit">
     <table>
-      <input type="text" name='id' value="{{package.get('id')}}"/>
+      <tr><td>ID</td><td>{{package.get('id')}}</td></tr>
+      <input type="hidden" name='id' value="{{package.get('id')}}"/>
       {%for s in schema%}
-      <tr><td>{{s}}</td>
-        <td><input type='text' name='{{s}}' value="{{package.get(s)}}"/></td>
-      </tr>
+        {% if s=='notes'%}
+          <tr><td>{{s}}</td>
+            <td><textarea name='{{s}}'>{{package.get(s)}}</textarea></td>
+          </tr>
+        {% else %}
+        <tr><td>{{s}}</td>
+          <td><input type='text' name='{{s}}' value="{{package.get(s)}}"/></td>
+        </tr>
+        {% endif %}
       {% endfor%}
       <tr><td colspan=2><input type='submit'/></td></tr>
     </table>
 </form>
+ 
 
  
  

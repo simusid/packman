@@ -9,10 +9,14 @@
   </head>
   
   <body>
+    <div class="header">
     <h1>PackMan</h1>
-    <p>A metadata manager for dataset "packages"</p>
+    <img src="/static/data-science-icon.svg" width=90 height=90/>
+    <h2>A Metadata Manager For Dataset Packages</h2>
+  
+  </div>
    
-    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="content" class="content">{% block content %}{% endblock %}</div>
     <a href="/datagrowth">Data growth of all packages</a>
     <div id="footer">
       {% block footer %}
