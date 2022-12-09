@@ -21,7 +21,14 @@ users = {
 auth = HTTPDigestAuth() 
 
 # top level schema shared by all packages
+# TODO - formalize this schema
+
 schema = ( "name", "description", "location",  "notes")
+schema = ("date", "SAS y/n", "location", "survey duration", "vehicle depth",
+"water col depth", "body of water", "city", "number of tracks", "survey type (box or hour glass",
+    "survey time in minutes", "size of data", "quality")
+
+ 
 
 @auth.get_password
 def get_pw(username):
